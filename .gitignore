@@ -1,0 +1,14 @@
+
+.env
+.env.*
+!.env.example
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfplan
+*.pem
+*.key
+*.log
+*.swp
+.DS_Store
+

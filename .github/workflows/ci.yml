@@ -1,5 +1,5 @@
 
-name: Kubernetes YAML Validation
+name: Platform Configuration Validation
 
 on:
   push:
@@ -8,7 +8,8 @@ on:
     branches: [main]
 
 jobs:
-  validate:
+  kubernetes:
+    name: Validate Kubernetes manifests
     runs-on: ubuntu-latest
 
     steps:
@@ -28,4 +29,26 @@ jobs:
             echo "Checking $file"
             kubeconform -strict -summary "$file"
           done
+
+  terraform:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      - name: Check Terraform formatting
+        run: terraform -chdir=terraform fmt -check -recursive
+
+      - name: Initialize Terraform
+        run: terraform -chdir=terraform init -backend=false
+
+      - name: Validate Terraform
+        run: terraform -chdir=terraform validate
 

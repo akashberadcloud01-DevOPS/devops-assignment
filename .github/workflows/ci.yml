@@ -1,0 +1,31 @@
+
+name: Kubernetes YAML Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install kubeconform
+        run: |
+          curl -fsSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz -o /tmp/kubeconform.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp kubeconform
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+
+      - name: Validate Kubernetes manifests
+        run: |
+          find kubernetes -type f \( -name "*.yaml" -o -name "*.yml" \) -print0 |
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            kubeconform -strict -summary "$file"
+          done
+

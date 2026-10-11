@@ -1,14 +1,7 @@
-
-.env
-.env.*
-!.env.example
+# Terraform local files
+.terraform/
 *.tfstate
 *.tfstate.*
-.terraform/
+tfplan
 *.tfplan
-*.pem
-*.key
-*.log
-*.swp
-.DS_Store
-
+crash.log

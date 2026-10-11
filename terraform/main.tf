@@ -122,4 +122,12 @@ output "private_subnet_ids" {
   description = "IDs of the private subnets"
   value       = aws_subnet.private[*].id
 }
-
+terraform {
+  backend "s3" {
+    bucket       = "devops-assignment-tfstate-323708468873"
+    key          = "devops-assignment/terraform.tfstate"
+    region       = "ap-south-1"
+    encrypt      = true
+    use_lockfile = true
+  }
+}

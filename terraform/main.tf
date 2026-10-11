@@ -122,6 +122,7 @@ output "private_subnet_ids" {
   description = "IDs of the private subnets"
   value       = aws_subnet.private[*].id
 }
+
 terraform {
   backend "s3" {
     bucket       = "devops-assignment-tfstate-323708468873"
@@ -130,4 +131,20 @@ terraform {
     encrypt      = true
     use_lockfile = true
   }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "${var.project_name}-private-rt"
+    Tier = "private"
+  }
+}
+
+resource "aws_route_table_association" "private" {
+  count = length(aws_subnet.private)
+
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
 }
